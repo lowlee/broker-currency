@@ -487,10 +487,11 @@ function Broker_Currency:AddLine(label, currencyList)
 		if BROKER_ICONS[idnum] then
 			local key = GetKey(idnum, false)
 			local count = currencyList[idnum] or 0
+			local maxcount = GetMaxCurrencyCount(idnum)
 
 			if char_db[key] then
 				if count ~= 0 then
-					line[# line + 1] = count
+					line[# line + 1] = count .. " / " .. maxcount
 				else
 					line[# line + 1] = " "
 				end
