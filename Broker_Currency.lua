@@ -620,6 +620,15 @@ local function GetCurrencyCount(idnum)
 	return PHYSICAL_CURRENCIES[idnum] and GetItemCount(idnum, true) or select(2, GetCurrencyInfo(idnum))
 end
 
+local function GetMaxCurrencyCount(idnum)
+
+	if not VALID_CURRENCIES[idnum] then
+		return 0
+	end
+	return PHYSICAL_CURRENCIES[idnum] and select(5, GetCurrencyInfo(idnum)) or nil
+
+end
+
 function Broker_Currency:Update(event)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:RegisterEvents()
