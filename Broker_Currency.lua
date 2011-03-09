@@ -578,10 +578,13 @@ do
 				if broker_icon then
 					local key = GetKey(idnum, true)
 					local count = currencyList[idnum] or 0
+					local maxount = GetMaxCurrencyCount(idnum)
 					local size = char_db.iconSize
 
 					if count > 0 and char_db[key] then
 						concatList[# concatList + 1] = string.format(broker_icon, count, size, size)
+						concatList[# concatList + 1] = " / "
+						concatList[# concatList + 1] = string.format(broker_icon, maxount, size, size)
 						concatList[# concatList + 1] = "  "
 					end
 				end
