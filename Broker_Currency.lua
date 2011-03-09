@@ -70,6 +70,14 @@ local sTotal = "="
 local HEARTHSTONE_IDNUM = 6948
 
 -------------------------------------------------------------------------------
+-- Upvalues
+-------------------------------------------------------------------------------
+local GetCurrencyInfo = GetCurrencyInfo
+local GetGameTime = GetGameTime
+local GetItemCount = GetItemCount
+local GetMoney = GetMoney
+
+-------------------------------------------------------------------------------
 -- Currencies
 -------------------------------------------------------------------------------
 local DALARAN_JEWELCRAFTERS_TOKEN	= 61
@@ -527,7 +535,7 @@ do
 		if offset then
 			return offset
 		end
-		local serverHour, serverMinute = _G.GetGameTime()
+		local serverHour, serverMinute = GetGameTime()
 		local utcHour = tonumber(date("!%H"))
 		local utcMinute = tonumber(date("!%M"))
 		local ser = serverHour + serverMinute / 60
@@ -609,7 +617,7 @@ local function GetCurrencyCount(idnum)
 	if not VALID_CURRENCIES[idnum] then
 		return 0
 	end
-	return PHYSICAL_CURRENCIES[idnum] and _G.GetItemCount(idnum, true) or select(2, _G.GetCurrencyInfo(idnum))
+	return PHYSICAL_CURRENCIES[idnum] and GetItemCount(idnum, true) or select(2, GetCurrencyInfo(idnum))
 end
 
 function Broker_Currency:Update(event)
@@ -635,14 +643,14 @@ function Broker_Currency:Update(event)
 		return
 	end
 
-	if _G.GetItemCount(HEARTHSTONE_IDNUM) < 1 and _G.GetMoney() == 0 then
+	if _G.GetItemCount(HEARTHSTONE_IDNUM) < 1 and GetMoney() == 0 then
 		-- ToDo: check all items for nil?
 		return
 	end
 
 	local realmInfo = Broker_CurrencyDB.realmInfo[REALM_NAME]
 	local player_info = Broker_CurrencyDB.realm[REALM_NAME][PLAYER_NAME]
-	local current_money = _G.GetMoney()
+	local current_money = GetMoney()
 
 	-- Update the current player info
 	player_info.money = current_money
@@ -904,7 +912,7 @@ do
 			startupTimer = nil
 		end
 
-		if _G.GetItemCount(HEARTHSTONE_IDNUM) < 1 and _G.GetMoney() == 0 then
+		if _G.GetItemCount(HEARTHSTONE_IDNUM) < 1 and GetMoney() == 0 then
 			if wtfDelay > 0 then
 				startupTimer = self:ScheduleTimer(self.InitializeSettings, wtfDelay, self)
 				wtfDelay = wtfDelay - 1
@@ -932,7 +940,7 @@ do
 		-------------------------------------------------------------------------------
 		-- Initialize the configuration options.
 		-------------------------------------------------------------------------------
-		local ICON_TOKEN = DISPLAY_ICON_STRING1 .. "Interface\\Icons\\" .. select(3, _G.GetCurrencyInfo(CONQUEST_POINTS)) .. DISPLAY_ICON_STRING2
+		local ICON_TOKEN = DISPLAY_ICON_STRING1 .. "Interface\\Icons\\" .. select(3, GetCurrencyInfo(CONQUEST_POINTS)) .. DISPLAY_ICON_STRING2
 
 
 		local function setIconSize(info, value)
@@ -1183,7 +1191,7 @@ do
 					BROKER_ICONS[idnum] = DISPLAY_ICON_STRING1 .. icon_path .. DISPLAY_ICON_STRING2
 				end
 			else
-				local name, _, icon_name = _G.GetCurrencyInfo(idnum)
+				local name, _, icon_name = GetCurrencyInfo(idnum)
 
 				if icon_name and icon_name ~= "" then
 					CURRENCY_NAMES[idnum] = name
@@ -1248,7 +1256,7 @@ do
 		end
 
 		-- Initialize statistics
-		self.last.money = _G.GetMoney()
+		self.last.money = GetMoney()
 		self.lastTime = GetToday(self)
 
 		local lastWeek = self.lastTime - 13
